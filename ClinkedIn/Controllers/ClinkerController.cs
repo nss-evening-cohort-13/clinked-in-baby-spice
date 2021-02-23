@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ClinkedIn.Models;
 using ClinkedIn.Data;
 
 namespace ClinkedIn.Controllers
@@ -23,6 +24,21 @@ namespace ClinkedIn.Controllers
         public IActionResult GetAllClinkers()
         {
             return Ok(_repo.GetAll());
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var clinker = _repo.Get(id);
+            if (clinker == null) return NotFound($"No clinker with Id {id} exists");
+            return Ok(clinker);
+        }
+
+        [HttpPost]
+        public IActionResult AddNewClinker(Clinker clinker)
+        {
+            _repo.Add(clinker);
+            return Created($"api/Clinkers/{clinker.Id}", clinker);
         }
     }
 }
