@@ -18,5 +18,17 @@ namespace ClinkedIn.Data
         {
             return _clinkers;
         }
+
+        public Clinker Get(int id)
+        {
+            return _clinkers.FirstOrDefault(clinker => clinker.Id == id);
+        }
+
+        public void Add(Clinker clinker)
+        {
+            var biggestId = _clinkers.Max(clinker => clinker.Id) + 1;
+            clinker.Id = biggestId;
+            _clinkers.Add(clinker);
+        }
     }
 }
