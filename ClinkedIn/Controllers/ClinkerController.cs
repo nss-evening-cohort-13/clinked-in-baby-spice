@@ -20,12 +20,14 @@ namespace ClinkedIn.Controllers
             _repo = new ClinkerRepository();
         }
 
+        // Get All Clinkers
         [HttpGet]
         public IActionResult GetAllClinkers()
         {
             return Ok(_repo.GetAll());
         }
 
+        // Get Clinker By ID
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
@@ -34,6 +36,7 @@ namespace ClinkedIn.Controllers
             return Ok(clinker);
         }
 
+        //Add Friend
         [HttpPut("{id}/add-friend-{friendId}")]
         public IActionResult AddFriend(int id, int friendId)
         {
@@ -50,22 +53,30 @@ namespace ClinkedIn.Controllers
 
         //Get Friends
         [HttpGet("{id}/friends")]
-
-        public IActionResult GetFriends(int friendId)
+        public IActionResult GetFriends(int id)
         {
-            var clinker = _repo.Get(friendId);
-            if (clinker.Friends == null)
-            {
-                return NotFound($"No Friends of {clinker.Id} exists....This is one lonely clinker");
-            }
-            return Ok($"Here are the clinker's friends: {friendId}"); 
+            var clinker = _repo.Get(id);
+            if (clinker == null) return NotFound($"There is no clinker with Id: {id}.");
+            if (clinker.Friends.Count == 0) return NotFound($"No Friends of {id} exists....This is one lonely clinker");
+            return Ok(clinker.Friends);
         }
             
+        //Add New Clinker
         [HttpPost]
         public IActionResult AddNewClinker(Clinker clinker)
         {
             _repo.Add(clinker);
             return Created($"api/Clinkers/{clinker.Id}", clinker);
+        }
+
+        //Get Enemies
+        [HttpGet("{id}/enemies")]
+        public IActionResult EnemiesList(int id)
+        {
+            var clinker = _repo.Get(id);
+            if (clinker == null) return NotFound($"No clinker with Id {id} exists");
+            if (clinker.Enemies.Count == 0) return NotFound($"{clinker.Name} has no enemies...");
+            return Ok(clinker.Enemies);
         }
 
         //Get Services
