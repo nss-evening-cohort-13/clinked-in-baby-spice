@@ -34,12 +34,27 @@ namespace ClinkedIn.Controllers
             return Ok(clinker);
         }
 
+        [HttpPut("{id}/add-friend-{friendId}")]
+        public IActionResult AddFriend(int id, int friendId)
+        {
+            var clinker = _repo.Get(id);
+            var friend = _repo.Get(friendId);
+            if (clinker.Friends.IndexOf(friendId) >= 0)
+            {
+                return StatusCode(208);
+            }
+            clinker.Friends.Add(friend.Id);
+            friend.Friends.Add(clinker.Id);
+            return Ok($"Added {friend.Name} as a friend");
+        }
+            
         [HttpPost]
         public IActionResult AddNewClinker(Clinker clinker)
         {
             _repo.Add(clinker);
             return Created($"api/Clinkers/{clinker.Id}", clinker);
         }
+
 
         [HttpGet("{id}/enemies")]
 
@@ -50,5 +65,14 @@ namespace ClinkedIn.Controllers
             if (clinker.Enemies.Count == 0) return NotFound($"{clinker.Name} has no enemies...");
             return Ok(clinker.Enemies);
        }
+        //Get Services
+        [HttpGet("{id}/services")]
+        public IActionResult GetServices(int id)
+        {
+            var clinker = _repo.Get(id);
+            if (clinker == null) return NotFound($"No Clinker of {id} exists...");
+            if (clinker.Services.Count == 0) return NotFound($"{clinker.Name} has no services...");
+            return Ok(clinker.Services);
+        }
     }
 }
