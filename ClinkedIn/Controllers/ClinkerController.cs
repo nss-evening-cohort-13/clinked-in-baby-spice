@@ -20,12 +20,14 @@ namespace ClinkedIn.Controllers
             _repo = new ClinkerRepository();
         }
 
+        // Get All Clinkers
         [HttpGet]
         public IActionResult GetAllClinkers()
         {
             return Ok(_repo.GetAll());
         }
 
+        // Get Clinker By ID
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
@@ -34,6 +36,7 @@ namespace ClinkedIn.Controllers
             return Ok(clinker);
         }
 
+        //Add Friend
         [HttpPut("{id}/add-friend-{friendId}")]
         public IActionResult AddFriend(int id, int friendId)
         {
@@ -47,7 +50,8 @@ namespace ClinkedIn.Controllers
             friend.Friends.Add(clinker.Id);
             return Ok($"Added {friend.Name} as a friend");
         }
-            
+        
+        //Add New Clinker
         [HttpPost]
         public IActionResult AddNewClinker(Clinker clinker)
         {
@@ -55,16 +59,16 @@ namespace ClinkedIn.Controllers
             return Created($"api/Clinkers/{clinker.Id}", clinker);
         }
 
-
+        //Get Enemies
         [HttpGet("{id}/enemies")]
-
         public IActionResult EnemiesList(int id)
         {
             var clinker = _repo.Get(id);
             if (clinker == null) return NotFound($"No clinker with Id {id} exists");
             if (clinker.Enemies.Count == 0) return NotFound($"{clinker.Name} has no enemies...");
             return Ok(clinker.Enemies);
-       }
+        }
+
         //Get Services
         [HttpGet("{id}/services")]
         public IActionResult GetServices(int id)
