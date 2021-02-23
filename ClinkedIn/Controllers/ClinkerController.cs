@@ -40,5 +40,15 @@ namespace ClinkedIn.Controllers
             _repo.Add(clinker);
             return Created($"api/Clinkers/{clinker.Id}", clinker);
         }
+
+        [HttpGet("{id}/enemies")]
+
+        public IActionResult EnemiesList(int id)
+        {
+            var clinker = _repo.Get(id);
+            if (clinker == null) return NotFound($"No clinker with Id {id} exists");
+            
+            return Ok(clinker.Enemies);
+       }
     }
 }
