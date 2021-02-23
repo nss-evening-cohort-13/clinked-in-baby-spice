@@ -57,7 +57,7 @@ namespace ClinkedIn.Controllers
         {
             var clinker = _repo.Get(id);
             if (clinker == null) return NotFound($"There is no clinker with Id: {id}.");
-            if (clinker.Friends.Count == 0) return NotFound($"No Friends of {id} exists....This is one lonely clinker");
+            if (clinker.Friends.Count == 0) return NotFound($"No Friends of {clinker.Name} exists....This is one lonely clinker");
             return Ok(clinker.Friends);
         }
             
