@@ -34,6 +34,20 @@ namespace ClinkedIn.Controllers
             return Ok(clinker);
         }
 
+        [HttpPut("{id}/add-friend-{friendId}")]
+        public IActionResult AddFriend(int id, int friendId)
+        {
+            var clinker = _repo.Get(id);
+            var friend = _repo.Get(friendId);
+            if (clinker.Friends.IndexOf(friendId) >= 0)
+            {
+                return StatusCode(208);
+            }
+            clinker.Friends.Add(friend.Id);
+            friend.Friends.Add(clinker.Id);
+            return Ok($"Added {friend.Name} as a friend");
+        }
+            
         [HttpPost]
         public IActionResult AddNewClinker(Clinker clinker)
         {
