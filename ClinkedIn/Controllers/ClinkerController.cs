@@ -47,6 +47,19 @@ namespace ClinkedIn.Controllers
             friend.Friends.Add(clinker.Id);
             return Ok($"Added {friend.Name} as a friend");
         }
+
+        //Get Friends
+        [HttpGet("{id}/friends")]
+
+        public IActionResult GetFriends(int friendId)
+        {
+            var clinker = _repo.Get(friendId);
+            if (clinker.Friends == null)
+            {
+                return NotFound($"No Friends of {clinker.Id} exists....This is one lonely clinker");
+            }
+            return Ok($"Here are the clinker's friends: {friendId}"); 
+        }
             
         [HttpPost]
         public IActionResult AddNewClinker(Clinker clinker)
