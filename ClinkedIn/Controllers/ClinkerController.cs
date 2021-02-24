@@ -111,5 +111,13 @@ namespace ClinkedIn.Controllers
             if (friendsOfFriends.Count == 0) return NotFound($"{clinker.Name} has no friends");
             return Ok(friendsOfFriends);
         }
+
+        //Get Days Remaining
+        [HttpGet("{id}/remaining")]
+        public IActionResult GetRemainingDays(int id)
+        {
+            var clinker = _repo.Get(id);
+            return Ok(clinker.DaysLeft);
+        }
     }
 }
