@@ -51,6 +51,7 @@ namespace ClinkedIn.Controllers
             return Ok($"Added {friend.Name} as a friend");
         }
 
+
         //Get Friends
         [HttpGet("{id}/friends")]
         public IActionResult GetFriends(int id)
@@ -60,8 +61,8 @@ namespace ClinkedIn.Controllers
             if (clinker.Friends.Count == 0) return NotFound($"No Friends of {clinker.Name} exists....This is one lonely clinker");
             return Ok(clinker.Friends);
         }
-            
-        //Add New Clinker
+
+        //Add Clinker
         [HttpPost]
         public IActionResult AddNewClinker(Clinker clinker)
         {
@@ -87,6 +88,28 @@ namespace ClinkedIn.Controllers
             if (clinker == null) return NotFound($"No Clinker of {id} exists...");
             if (clinker.Services.Count == 0) return NotFound($"{clinker.Name} has no services...");
             return Ok(clinker.Services);
+        }
+
+        // Get Friends of Friends
+        [HttpGet("{id}/friends-of-friends")]
+        public IActionResult FriendsOfFriends(int id)
+        {
+            var clinker = _repo.Get(id);
+            var friendsOfFriends = new List<Clinker>();
+            clinker.Friends.ForEach(friendId =>
+            {
+                var friend = _repo.Get(friendId);
+                friend.Friends.ForEach(fofId =>
+                {
+                    var friendOfFriend = _repo.Get(fofId);
+                    if (fofId != id && friendsOfFriends.IndexOf(friendOfFriend) < 0)
+                    {
+                        friendsOfFriends.Add(friendOfFriend);
+                    }
+                });
+            });
+            if (friendsOfFriends.Count == 0) return NotFound($"{clinker.Name} has no friends");
+            return Ok(friendsOfFriends);
         }
     }
 }
