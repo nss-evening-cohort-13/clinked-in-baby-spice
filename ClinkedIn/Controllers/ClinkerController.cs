@@ -21,11 +21,14 @@ namespace ClinkedIn.Controllers
             _repo = new ClinkerRepository();
         }
 
-        // Get All Clinkers
+        // Get All Clinker's Names
         [HttpGet]
         public IActionResult GetAllClinkers()
         {
-            return Ok(_repo.GetAll());
+            var clinkers = _repo.GetAll();
+            var clinkerNames = new List<string>();
+            foreach (var clinker in clinkers) clinkerNames.Add(clinker.Name);
+            return Ok(clinkerNames);
         }
 
         // Get Clinker By ID
@@ -111,6 +114,25 @@ namespace ClinkedIn.Controllers
             });
             if (friendsOfFriends.Count == 0) return NotFound($"{clinker.Name} has no friends");
             return Ok(friendsOfFriends);
+        }
+
+        //Clinkers By Interest
+        [HttpGet("interest/{keyword}")]
+        public IActionResult SearchByInterest(string keyword)
+        {
+            TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+            var clinkers = _repo.GetAll();
+            var clinkerInterests = new List<Clinker>();
+            var parsedKeyword = textInfo.ToTitleCase(keyword.Replace('-', ' '));
+
+            foreach (var person in clinkers)
+            {
+                if (person.Interests.Contains(parsedKeyword))
+                {
+                    clinkerInterests.Add(person);
+                }
+            }
+            return Ok(clinkerInterests);
         }
 
         //Get Days Remaining
