@@ -131,5 +131,13 @@ namespace ClinkedIn.Controllers
             }
             return Ok(clinkerInterests);
         }
+
+        //Get Days Remaining
+        [HttpGet("{id}/remaining")]
+        public IActionResult GetRemainingDays(int id)
+        {
+            var clinker = _repo.Get(id);
+            return Ok(clinker.DaysLeft);
+        }
     }
 }
