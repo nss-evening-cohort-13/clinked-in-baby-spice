@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ClinkedIn.Models;
 using ClinkedIn.Data;
+using System.Globalization;
 
 namespace ClinkedIn.Controllers
 {
@@ -110,6 +111,25 @@ namespace ClinkedIn.Controllers
             });
             if (friendsOfFriends.Count == 0) return NotFound($"{clinker.Name} has no friends");
             return Ok(friendsOfFriends);
+        }
+
+        //Clinkers By Interest
+        [HttpGet("interest/{keyword}")]
+        public IActionResult SearchByInterest(string keyword)
+        {
+            TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+            var clinkers = _repo.GetAll();
+            var clinkerInterests = new List<Clinker>();
+            var parsedKeyword = textInfo.ToTitleCase(keyword.Replace('-', ' '));
+
+            foreach (var person in clinkers)
+            {
+                if (person.Interests.Contains(parsedKeyword))
+                {
+                    clinkerInterests.Add(person);
+                }
+            }
+            return Ok(clinkerInterests);
         }
 
         //Get Days Remaining
