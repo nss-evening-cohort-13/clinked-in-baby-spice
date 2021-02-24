@@ -21,11 +21,14 @@ namespace ClinkedIn.Controllers
             _repo = new ClinkerRepository();
         }
 
-        // Get All Clinkers
+        // Get All Clinker's Names
         [HttpGet]
         public IActionResult GetAllClinkers()
         {
-            return Ok(_repo.GetAll());
+            var clinkers = _repo.GetAll();
+            var clinkerNames = new List<string>();
+            foreach (var clinker in clinkers) clinkerNames.Add(clinker.Name);
+            return Ok(clinkerNames);
         }
 
         // Get Clinker By ID
