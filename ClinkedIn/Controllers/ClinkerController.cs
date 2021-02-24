@@ -21,7 +21,7 @@ namespace ClinkedIn.Controllers
             _repo = new ClinkerRepository();
         }
 
-        // Get All Clinker's Names
+        // Get All Clinkers
         [HttpGet]
         public IActionResult GetAllClinkers()
         {
@@ -116,31 +116,24 @@ namespace ClinkedIn.Controllers
             return Ok(friendsOfFriends);
         }
 
-        //Clinkers By Interest
-        [HttpGet("interest/{keyword}")]
-        public IActionResult SearchByInterest(string keyword)
-        {
-            TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
-            var clinkers = _repo.GetAll();
-            var clinkerInterests = new List<Clinker>();
-            var parsedKeyword = textInfo.ToTitleCase(keyword.Replace('-', ' '));
+        // Add enemies to clinker
+        [HttpPut("{id}/add-enemy-{enemyId}")]
 
-            foreach (var person in clinkers)
-            {
-                if (person.Interests.Contains(parsedKeyword))
-                {
-                    clinkerInterests.Add(person);
-                }
-            }
-            return Ok(clinkerInterests);
-        }
-
-        //Get Days Remaining
-        [HttpGet("{id}/remaining")]
-        public IActionResult GetRemainingDays(int id)
+        public IActionResult AddEnemy(int id, int EnemyId)
         {
             var clinker = _repo.Get(id);
-            return Ok(clinker.DaysLeft);
+            var enemy = _repo.Get(EnemyId);
+            if (clinker != null && enemy != null)
+            {
+                if (clinker.Enemies.IndexOf(EnemyId) >= 0)
+                {
+                    return StatusCode(208);
+                }
+                clinker.Enemies.Add(enemy.Id);
+                return Ok($"Added {enemy.Name} as a Enemy");
+            }
+            return NotFound("Not valid clinker and enemy");
+
         }
     }
 }
