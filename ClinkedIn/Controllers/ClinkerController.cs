@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ClinkedIn.Models;
 using ClinkedIn.Data;
+using System.Globalization;
 
 namespace ClinkedIn.Controllers
 {
@@ -110,6 +111,26 @@ namespace ClinkedIn.Controllers
             });
             if (friendsOfFriends.Count == 0) return NotFound($"{clinker.Name} has no friends");
             return Ok(friendsOfFriends);
+        }
+
+        // Add enemies to clinker
+        [HttpPut("{id}/add-enemy-{enemyId}")]
+
+        public IActionResult AddEnemy(int id, int EnemyId)
+        {
+            var clinker = _repo.Get(id);
+            var enemy = _repo.Get(EnemyId);
+            if (clinker != null && enemy != null)
+            {
+                if (clinker.Enemies.IndexOf(EnemyId) >= 0)
+                {
+                    return StatusCode(208);
+                }
+                clinker.Enemies.Add(enemy.Id);
+                return Ok($"Added {enemy.Name} as a Enemy");
+            }
+            return NotFound("Not valid clinker and enemy");
+
         }
     }
 }
