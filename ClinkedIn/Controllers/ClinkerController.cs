@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ClinkedIn.Models;
 using ClinkedIn.Data;
+using System.Globalization;
 
 namespace ClinkedIn.Controllers
 {
@@ -119,5 +120,47 @@ namespace ClinkedIn.Controllers
             var clinker = _repo.Get(id);
             return Ok(clinker.DaysLeft);
         }
+
+        // Put and Delete interests
+        [HttpPut("{id}/interests/{interest}/{command}")]
+        public IActionResult PutInterest(int id, string interest, string command)
+        {
+            TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+
+            var clinker = _repo.Get(id);
+            var interests = clinker.Interests;
+            var parsedInterest = textInfo.ToTitleCase(interest.Replace('-', ' '));
+            if (command == "add")
+            {
+                interests.Add(parsedInterest);
+            }
+            else if (command == "remove")
+            {
+                interests.Remove(parsedInterest);
+            }
+            return Ok(clinker.Interests);
+        }
+
+        // Put and Delete services
+        [HttpPut("{id}/services/{service}/{command}")]
+
+        public IActionResult PutService(int id, string service, string command)
+        {
+            TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+
+            var clinker = _repo.Get(id);
+            var services = clinker.Services;
+            var parsedService = textInfo.ToTitleCase(service.Replace('-', ' '));
+            if (command == "add")
+            {
+                services.Add(parsedService);
+            }
+            else if (command == "remove")
+            {
+                services.Remove(parsedService);
+            }
+            return Ok(clinker.Services);
+        }
+       
     }
 }
