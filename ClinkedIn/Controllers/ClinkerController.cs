@@ -176,6 +176,25 @@ namespace ClinkedIn.Controllers
             }
             return Ok(clinker.Services);
         }
-       
+
+        //Clinkers By Interest
+        [HttpGet("interest/{keyword}")]
+        public IActionResult SearchByInterest(string keyword)
+        {
+            TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+            var clinkers = _repo.GetAll();
+            var clinkerInterests = new List<Clinker>();
+            var parsedKeyword = textInfo.ToTitleCase(keyword.Replace('-', ' '));
+
+            foreach (var person in clinkers)
+            {
+                if (person.Interests.Contains(parsedKeyword))
+                {
+                    clinkerInterests.Add(person);
+                }
+            }
+            return Ok(clinkerInterests);
+        }
+
     }
 }
